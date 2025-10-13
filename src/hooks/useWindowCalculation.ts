@@ -1,23 +1,27 @@
 "use client"
 
 import { useMemo } from "react"
-import { startOfDay, addDays, format, isValid } from "date-fns"
+import { startOfDay, addDays, differenceInDays, format, isValid } from "date-fns"
 import type { PayWindow } from "@types/index"
+
+// Reference date for calculating pay periods (Oct 2, 2024)
+const REFERENCE_DATE = new Date(2024, 9, 2) // Month is 0-indexed, so 9 = October
 
 /**
  * Calculates pay window boundaries for any given date
  *
  * Pay Window Rules:
- * - Window starts on Thursday and ends on following Friday (8 days inclusive)
- * - Payday is 7 days after window end (the next Friday)
+ * - Fixed 2-week (14-day) pay periods starting from Oct 2, 2024
+ * - Any work date falls into one of these fixed periods
+ * - Payday is 14 days after the period ends
  *
  * @param date - Any date to calculate the window for (can be undefined)
  * @returns PayWindow object with start, end, and payday dates, or null if date is invalid
  *
  * @example
- * // For a date in the window Thu 09/18 → Fri 09/26
- * const window = useWindowCalculation(new Date('2025-09-20'));
- * // Returns: { startDate: Thu 09/18, endDate: Fri 09/26, paydayDate: Fri 10/03 }
+ * // For Oct 9, 2024 (falls into Oct 2-15 period)
+ * const window = useWindowCalculation(new Date('2024-10-09'));
+ * // Returns: { startDate: Oct 2, endDate: Oct 15, paydayDate: Oct 29 }
  */
 export function useWindowCalculation(date: Date | undefined): PayWindow | null {
   return useMemo(() => {
@@ -26,15 +30,23 @@ export function useWindowCalculation(date: Date | undefined): PayWindow | null {
     }
 
     const normalized = startOfDay(date)
-    const dayOfWeek = normalized.getDay() // 0 = Sunday, 4 = Thursday, 5 = Friday
+    const refDate = startOfDay(REFERENCE_DATE)
 
-    // Calculate days back to the most recent Thursday (or current day if Thursday)
-    // Thursday = 4, so we need to go back (dayOfWeek - 4 + 7) % 7 days
-    const daysBackToThursday = (dayOfWeek + 3) % 7 // 0 if Thu, 1 if Fri, 2 if Sat, etc.
+    // Calculate how many days since reference date
+    const daysSinceRef = differenceInDays(normalized, refDate)
 
-    const startDate = addDays(normalized, -daysBackToThursday)
-    const endDate = addDays(startDate, 8) // 8 days later = following Friday
-    const paydayDate = addDays(endDate, 7) // 7 days after end = next Friday
+    // Determine which 2-week period this date falls into
+    // Each period is 14 days (0-13, 14-27, 28-41, etc.)
+    const periodIndex = Math.floor(daysSinceRef / 14)
+
+    // Calculate the start of this period
+    const startDate = addDays(refDate, periodIndex * 14)
+
+    // End date is 13 days after start (14 days total including start)
+    const endDate = addDays(startDate, 13)
+
+    // Payday is 14 days after period ends
+    const paydayDate = addDays(endDate, 14)
 
     return {
       startDate,
