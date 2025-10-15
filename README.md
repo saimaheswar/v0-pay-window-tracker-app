@@ -1,6 +1,6 @@
 # PayWindow Tracker
 
-A production-ready local-first pay tracking web application built with React 19, TypeScript, and IndexedDB.
+A production-ready local-first pay tracking web application built with Next.js 15, React 19, TypeScript, and IndexedDB.
 
 ## Quick Start (One Command)
 
@@ -8,7 +8,7 @@ A production-ready local-first pay tracking web application built with React 19,
 npm install && npm run dev
 \`\`\`
 
-This will install all dependencies and start the development server at `http://localhost:5173`
+This will install all dependencies and start the development server at `http://localhost:3000`
 
 ## Prerequisites
 
@@ -48,7 +48,7 @@ npm install
 # 2. Start development server
 npm run dev
 
-# 3. Open browser to http://localhost:5173
+# 3. Open browser to http://localhost:3000
 \`\`\`
 
 ### Option 3: Production Build
@@ -57,17 +57,17 @@ npm run dev
 # Install and build for production
 npm install && npm run build
 
-# Preview production build
-npm run preview
+# Start production server
+npm run start
 \`\`\`
 
 ## Available Scripts
 
 | Command | Description |
 |---------|-------------|
-| `npm run dev` | Start development server (hot reload enabled) |
+| `npm run dev` | Start Next.js development server (hot reload enabled) |
 | `npm run build` | Build for production |
-| `npm run preview` | Preview production build locally |
+| `npm run start` | Start production server |
 | `npm run lint` | Run ESLint to check code quality |
 | `npm run format` | Format code with Prettier |
 | `npm run test` | Run unit tests with Vitest |
@@ -85,8 +85,8 @@ npm run preview
 
 ## Tech Stack
 
-- **Frontend Framework**: React 19.2 with TypeScript 5.x
-- **Build Tool**: Vite 6.x
+- **Framework**: Next.js 15.2 (App Router)
+- **Frontend**: React 19 with TypeScript 5.x
 - **Styling**: Tailwind CSS 4.x
 - **Database**: IndexedDB via Dexie.js 4.x
 - **Date Handling**: date-fns 3.x
@@ -99,9 +99,9 @@ npm run preview
 \`\`\`
 paywindow-tracker/
 ├── app/                    # Next.js app directory
-│   ├── layout.tsx         # Root layout with theme provider
+│   ├── layout.tsx         # Root layout with metadata
 │   ├── page.tsx           # Main page component
-│   └── globals.css        # Global styles and design tokens
+│   └── globals.css        # Global styles and glassmorphism effects
 ├── src/
 │   ├── components/
 │   │   └── ui/            # Reusable UI components (Button, Card, etc.)
@@ -109,23 +109,26 @@ paywindow-tracker/
 │   │   ├── track-pay/     # Work entry tracking feature
 │   │   │   ├── CalendarPanel.tsx
 │   │   │   ├── EntryForm.tsx
+│   │   │   ├── TrackPaySection.tsx
 │   │   │   └── WindowIndicator.tsx
 │   │   └── payout-status/ # Payment status feature
-│   │       └── PayoutCard.tsx
+│   │       ├── PayoutCard.tsx
+│   │       └── PayoutStatusSection.tsx
 │   ├── hooks/             # Custom React hooks
 │   │   ├── useWindowCalculation.ts
 │   │   ├── useCurrentWindow.ts
 │   │   ├── useWorkEntry.ts
-│   │   └── usePayoutToggle.ts
+│   │   ├── usePayoutToggle.ts
+│   │   ├── useEntriesByWindow.ts
+│   │   └── useEntriesByDate.ts
 │   ├── services/
 │   │   └── storage/       # IndexedDB database logic
 │   │       └── database.ts
-│   ├── types/             # TypeScript interfaces
-│   │   └── index.ts
-│   └── App.tsx            # Main application component
+│   └── types/             # TypeScript interfaces
+│       └── index.ts
 ├── components/            # shadcn/ui components
+├── next.config.js         # Next.js configuration
 ├── package.json
-├── vite.config.ts
 └── tsconfig.json
 \`\`\`
 
@@ -182,14 +185,14 @@ paywindow-tracker/
 
 ### Port Already in Use
 
-If port 5173 is already in use:
+If port 3000 is already in use:
 
 \`\`\`bash
 # Kill the process using the port (macOS/Linux)
-lsof -ti:5173 | xargs kill -9
+lsof -ti:3000 | xargs kill -9
 
 # Or specify a different port
-npm run dev -- --port 3000
+PORT=3001 npm run dev
 \`\`\`
 
 ### Dependencies Installation Issues
@@ -210,8 +213,8 @@ npm install
 ### Build Errors
 
 \`\`\`bash
-# Clean build and rebuild
-rm -rf dist
+# Clean Next.js cache and rebuild
+rm -rf .next
 npm run build
 \`\`\`
 
@@ -261,4 +264,4 @@ For issues or questions:
 
 ---
 
-**Built with ❤️ using React, TypeScript, and Vite**
+**Built with ❤️ using Next.js, React, and TypeScript**
