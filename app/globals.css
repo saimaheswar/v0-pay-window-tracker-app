@@ -3,6 +3,9 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ============================================
+   THEME VARIABLES - Light & Dark Mode
+   ============================================ */
 :root {
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -74,6 +77,9 @@
   --sidebar-ring: oklch(0.439 0 0);
 }
 
+/* ============================================
+   TAILWIND THEME CONFIGURATION
+   ============================================ */
 @theme inline {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -115,7 +121,9 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
-/* Removed @apply usage that was causing Tailwind errors */
+/* ============================================
+   BASE STYLES - Progressive Blur Background
+   ============================================ */
 @layer base {
   body {
     background: linear-gradient(
@@ -133,7 +141,7 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Progressive blur background layers */
+  /* Progressive blur background layers - animated ambient lighting */
   body::before,
   body::after {
     content: "";
@@ -166,10 +174,15 @@
   }
 }
 
-/* Glassmorphism and neomorphism component styles */
+/* ============================================
+   GLASSMORPHISM COMPONENTS
+   Modern glass-like UI elements with blur
+   ============================================ */
 @layer components {
+  /* Primary glass card - main container style */
   .glass-card {
     backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
     background: linear-gradient(to bottom right, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.1));
     border-radius: 1.5rem;
     border: 1px solid rgba(255, 255, 255, 0.18);
@@ -177,32 +190,41 @@
       rgba(255, 255, 255, 0.3);
   }
 
+  /* Hoverable glass card with enhanced effects */
   .glass-card-hover {
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .glass-card-hover:hover {
     backdrop-filter: blur(60px);
-    background: rgba(255, 255, 255, 0.3);
+    -webkit-backdrop-filter: blur(60px);
+    background: linear-gradient(to bottom right, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.15));
     box-shadow: 0 12px 40px 0 rgba(139, 92, 246, 0.2), 0 4px 12px 0 rgba(0, 0, 0, 0.08), inset 0 1px 1px 0
       rgba(255, 255, 255, 0.4);
+    transform: translateY(-2px);
   }
 
-  .neomorphic-btn {
-    box-shadow: 8px 8px 16px rgba(139, 92, 246, 0.1), -8px -8px 16px rgba(255, 255, 255, 0.5);
-    transition: all 0.2s ease;
+  /* Progressive blur background - reusable background layer */
+  .progressive-blur-bg {
+    position: relative;
+    overflow: hidden;
   }
 
-  .neomorphic-btn:active {
-    box-shadow: inset 4px 4px 8px rgba(139, 92, 246, 0.15), inset -4px -4px 8px rgba(255, 255, 255, 0.3);
+  .progressive-blur-bg::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 30% 40%, rgba(139, 92, 246, 0.12) 0%, transparent 60%),
+      radial-gradient(circle at 70% 60%, rgba(99, 102, 241, 0.12) 0%, transparent 60%);
+    filter: blur(50px);
+    z-index: -1;
+    pointer-events: none;
   }
 
-  .neomorphic-switch {
-    box-shadow: 4px 4px 8px rgba(139, 92, 246, 0.1), -4px -4px 8px rgba(255, 255, 255, 0.5);
-  }
-
+  /* Glass input field */
   .input-glass {
     backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
     background: rgba(255, 255, 255, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 1rem;
@@ -219,12 +241,78 @@
     outline: none;
     box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.5);
     border-color: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.25);
+  }
+
+  /* Glass panel - lighter variant */
+  .glass-panel {
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 16px 0 rgba(139, 92, 246, 0.1);
   }
 }
 
-/* Custom scrollbar */
+/* ============================================
+   NEOMORPHISM COMPONENTS
+   Soft UI elements with depth shadows
+   ============================================ */
+@layer components {
+  /* Neomorphic button - raised effect */
+  .neomorphic-btn {
+    box-shadow: 8px 8px 16px rgba(139, 92, 246, 0.1), -8px -8px 16px rgba(255, 255, 255, 0.5);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 1rem;
+  }
+
+  .neomorphic-btn:hover {
+    box-shadow: 10px 10px 20px rgba(139, 92, 246, 0.15), -10px -10px 20px rgba(255, 255, 255, 0.6);
+  }
+
+  .neomorphic-btn:active {
+    box-shadow: inset 4px 4px 8px rgba(139, 92, 246, 0.15), inset -4px -4px 8px rgba(255, 255, 255, 0.3);
+    transform: scale(0.98);
+  }
+
+  /* Neomorphic switch/toggle */
+  .neomorphic-switch {
+    box-shadow: 4px 4px 8px rgba(139, 92, 246, 0.1), -4px -4px 8px rgba(255, 255, 255, 0.5);
+    border-radius: 9999px;
+    transition: all 0.2s ease;
+  }
+
+  .neomorphic-switch:active {
+    box-shadow: inset 2px 2px 4px rgba(139, 92, 246, 0.15), inset -2px -2px 4px rgba(255, 255, 255, 0.3);
+  }
+
+  /* Neomorphic card - flat with subtle depth */
+  .neomorphic-card {
+    box-shadow: 6px 6px 12px rgba(139, 92, 246, 0.08), -6px -6px 12px rgba(255, 255, 255, 0.4);
+    border-radius: 1.5rem;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(245, 245, 255, 0.9));
+    transition: all 0.3s ease;
+  }
+
+  .neomorphic-card:hover {
+    box-shadow: 8px 8px 16px rgba(139, 92, 246, 0.12), -8px -8px 16px rgba(255, 255, 255, 0.5);
+  }
+
+  /* Neomorphic inset - pressed effect */
+  .neomorphic-inset {
+    box-shadow: inset 3px 3px 6px rgba(139, 92, 246, 0.1), inset -3px -3px 6px rgba(255, 255, 255, 0.4);
+    border-radius: 0.75rem;
+  }
+}
+
+/* ============================================
+   UTILITY STYLES
+   ============================================ */
+/* Custom scrollbar styling */
 ::-webkit-scrollbar {
   width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
@@ -235,8 +323,26 @@
 ::-webkit-scrollbar-thumb {
   background: rgba(139, 92, 246, 0.3);
   border-radius: 10px;
+  transition: background 0.2s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(139, 92, 246, 0.5);
+}
+
+/* Selection styling */
+::selection {
+  background: rgba(139, 92, 246, 0.3);
+  color: rgb(31, 41, 55);
+}
+
+::-moz-selection {
+  background: rgba(139, 92, 246, 0.3);
+  color: rgb(31, 41, 55);
+}
+
+/* Focus visible for accessibility */
+:focus-visible {
+  outline: 2px solid rgba(139, 92, 246, 0.5);
+  outline-offset: 2px;
 }
