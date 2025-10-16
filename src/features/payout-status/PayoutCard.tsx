@@ -22,10 +22,10 @@ export function PayoutCard({ block, index }: PayoutCardProps) {
     }
   }
 
-  // Calculate window start date (13 days before end)
+  // Calculate window start date (8 days before end for 9-day window)
   const endDate = parseISO(block.windowEndDate)
   const startDate = new Date(endDate)
-  startDate.setDate(startDate.getDate() - 13)
+  startDate.setDate(startDate.getDate() - 8)
 
   return (
     <motion.div

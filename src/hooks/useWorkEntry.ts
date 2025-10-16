@@ -15,7 +15,7 @@ async function updateWindowTotalHours(windowEndDate: string): Promise<void> {
     const totalHours = entries.reduce((sum, entry) => sum + entry.hours, 0)
 
     const endDate = new Date(windowEndDate)
-    const paydayDate = format(addDays(endDate, 14), "yyyy-MM-dd")
+    const paydayDate = format(addDays(endDate, 6), "yyyy-MM-dd")
 
     // Upsert the paidBlock
     const existingBlock = await db.paidBlocks.get(windowEndDate)
